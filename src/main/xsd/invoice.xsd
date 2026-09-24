@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="https://example.test/invoice"
+    xmlns:inv="https://example.test/invoice"
+    elementFormDefault="qualified">
+
+  <xsd:element name="invoice" type="inv:invoiceType"/>
+
+  <xsd:complexType name="invoiceType">
+    <xsd:sequence>
+      <xsd:element name="number" type="inv:invoiceNumberType"/>
+      <xsd:element name="issued" type="xsd:date"/>
+      <xsd:element name="customer" type="inv:customerType"/>
+      <xsd:element name="line" type="inv:lineType" maxOccurs="10"/>
+      <xsd:element name="attachment" type="inv:attachmentType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="note" type="inv:noteType" minOccurs="0"/>
+      <xsd:element name="discount" type="inv:percentageType" minOccurs="0"/>
+      <xsd:element name="total" type="inv:amountType"/>
+      <xsd:element name="paid" type="xsd:boolean" fixed="false"/>
+      <xsd:element name="tags" type="inv:tagListType" minOccurs="0"/>
+      <xsd:choice minOccurs="0">
+        <xsd:element name="orderReference" type="inv:referenceType"/>
+        <xsd:element name="contractReference" type="inv:referenceType"/>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="currency" type="inv:currencyType" use="required"/>
+    <xsd:attribute name="language" type="inv:languageType"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="invoiceNumberType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z]{2}[0-9]{5}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="referenceType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="30"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="noteType">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="200"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="percentageType">
+    <xsd:restriction base="xsd:decimal">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="100"/>
+      <xsd:fractionDigits value="2"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="amountType">
+    <xsd:restriction base="xsd:decimal">
+      <xsd:minInclusive value="0"/>
+      <xsd:totalDigits value="12"/>
+      <xsd:fractionDigits value="2"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="tagListType">
+    <xsd:list itemType="inv:tagType"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="tagType">
+    <xsd:restriction base="xsd:string">
+      <xsd:minLength value="2"/>
+      <xsd:maxLength value="20"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="currencyType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EUR"/>
+      <xsd:enumeration value="USD"/>
+      <xsd:enumeration value="GBP"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="languageType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[a-z]{2}(-[A-Z]{2})?"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="customerType">
+    <xsd:sequence>
+      <xsd:element name="name" type="inv:nameType"/>
+      <xsd:element name="email" type="inv:emailType" minOccurs="0"/>
+      <xsd:element name="address" type="inv:addressType"/>
+      <xsd:element name="vip" type="xsd:boolean" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="inv:customerIdType" use="required"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="customerIdType">
+    <xsd:restriction base="xsd:int">
+      <xsd:minInclusive value="1"/>
+      <xsd:maxInclusive value="999999"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="nameType">
+    <xsd:restriction base="xsd:string">
+      <xsd:minLength value="2"/>
+      <xsd:maxLength value="60"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="emailType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[^@]+@[^@]+\.[a-z]{2,}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="addressType">
+    <xsd:sequence>
+      <xsd:element name="street" type="inv:nameType"/>
+      <xsd:element name="city" type="inv:nameType"/>
+      <xsd:element name="zip" type="inv:zipType"/>
+      <xsd:element name="country" type="inv:countryType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="zipType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9]{5}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="countryType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z]{2}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="lineType">
+    <xsd:sequence>
+      <xsd:element name="description" type="inv:nameType"/>
+      <xsd:element name="quantity" type="inv:quantityType"/>
+      <xsd:element name="unitPrice" type="inv:amountType"/>
+      <xsd:element name="taxRate" type="inv:percentageType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="quantityType">
+    <xsd:restriction base="xsd:int">
+      <xsd:minInclusive value="1"/>
+      <xsd:maxInclusive value="999"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="attachmentType">
+    <xsd:sequence>
+      <xsd:element name="fileName" type="inv:nameType"/>
+      <xsd:element name="url" type="xsd:anyURI"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>
