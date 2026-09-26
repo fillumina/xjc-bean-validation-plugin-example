@@ -1,6 +1,7 @@
 # Runs the example on every push and pull request, and once a night against the latest commit of
-# the project it imports. The plugin is not released yet, so its snapshot exists nowhere else, and
-# what this example has to prove is that the current sources work inside a real build.
+# the project it imports. The example pins the released version, the one a reader resolves from
+# Central, but the clone is built at whatever version the plugin carries now, so the build step is
+# told which one that was. Without it a nightly run would quietly test the release instead.
 
 name: CI
 
@@ -29,9 +30,11 @@ jobs:
         distribution: 'temurin'
 
     - name: Install the plugin from its latest commit
+      id: plugin
       run: |
         git clone --depth 1 https://github.com/fillumina/xjc-bean-validation-plugin
         mvn -B -DskipTests install --file xjc-bean-validation-plugin/pom.xml
+        echo "version=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout --file xjc-bean-validation-plugin/pom.xml)" >> "$GITHUB_OUTPUT"
 
     - name: Build and test the example
-      run: mvn -B verify --file pom.xml
+      run: mvn -B verify --file pom.xml -Dxjc-bean-validation-plugin.version=${{ steps.plugin.outputs.version }}
