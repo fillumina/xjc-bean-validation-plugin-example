@@ -1,6 +1,6 @@
-# xjc-bean-validation-plugin-example
-
 [![Maven Central](https://img.shields.io/maven-central/v/com.fillumina/xjc-bean-validation-plugin.svg)](https://central.sonatype.com/artifact/com.fillumina/xjc-bean-validation-plugin)
+
+# xjc-bean-validation-plugin-example
 
 The badge is the release of `xjc-bean-validation-plugin` this example pins, the one a build
 resolves from Central.
