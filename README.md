@@ -1,9 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/com.fillumina/xjc-bean-validation-plugin.svg)](https://central.sonatype.com/artifact/com.fillumina/xjc-bean-validation-plugin)
-
 # xjc-bean-validation-plugin-example
-
-The badge is the release of `xjc-bean-validation-plugin` this example pins, the one a build
-resolves from Central.
 
 An example of [`xjc-bean-validation-plugin`](https://github.com/fillumina/xjc-bean-validation-plugin)
 inside a real build, and the functional test of that wiring. The `jaxb-maven-plugin` runs the plugin
